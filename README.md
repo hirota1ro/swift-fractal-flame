@@ -1,5 +1,6 @@
-# FractalFlame
+# Fractal Flame Utilities
 
+<img width="512" alt="c-0001-0002" src="https://user-images.githubusercontent.com/45020018/169014777-af471ad8-6fb0-4534-b6db-0b09be0eed63.png">
 
 Help
 ```

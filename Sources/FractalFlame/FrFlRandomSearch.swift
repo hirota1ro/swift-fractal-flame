@@ -54,7 +54,7 @@ extension FractalFlame.Search {
             let ratio = rndrr.ratio
             if succeeded && ratio > threshold {
                 print("good - \(ratio) > \(threshold)", terminator:"")
-                elt.title = fileName(number: count)
+                elt.title = fileName(number: found)
                 elt.stat = stat.node
                 parent.add(child: elt)
                 found += 1

@@ -66,7 +66,7 @@ extension CGAffineTransform {
 }
 
 extension CGAffineTransform {
-    init(skewX sx: CGFloat, y sy: CGFloat) { self.init(a: 1, b: sx, c: sy, d: 1, tx:0 , ty: 0) }
+    init(skewX sx: CGFloat, y sy: CGFloat) { self.init(a: 1, b: sy, c: sx, d: 1, tx:0 , ty: 0) }
 }
 
 // MARK: - CustomStringConvertible

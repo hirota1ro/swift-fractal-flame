@@ -105,8 +105,8 @@ extension FrFlRandomFlameGeneratorBase: FrFlRandomFlameGenerator {
             let tx = baseAffine.tx + Float.random(in: -0.1 ..< 0.1)
             let ty = baseAffine.ty + Float.random(in: -0.1 ..< 0.1)
             let affine = FFAffineMatrix(a:a, b:b, c:c, d:d, tx:tx, ty:ty)
-            let b1: [Float] = baseFlame.blend.map { $0 + Float.random(in: -0.1 ..< 0.1) }
-            let blend = b1
+            let bl: [Float] = baseFlame.blend.map { $0 + Float.random(in: -0.1 ..< 0.1) }
+            let blend = bl.normalized()
             let color = baseFlame.color
             return FFFlame(affine: affine, blend: blend, color: color)
         }
@@ -137,13 +137,19 @@ extension FrFlRandomFlameGeneratorCount: FrFlRandomFlameGenerator {
             let sky = Float.random(in: -1.0 ..< 1.0)
             let skw = FFAffineSkew(skewX: skx, y: sky)
             let affine = FFAffineComposite(array: [skw, rot, scl, tr])
-            let b1: [Float] = (0 ..< countOfVarias).map { _ in Float.random(in: 0.0 ..< 1.0) }
-            let b2 = b1.reduce(0, +)
-            let b3 = b1.map { $0 / b2 }
-            let blend = b3
+            let bl: [Float] = (0 ..< countOfVarias).map { _ in Float.random(in: 0.0 ..< 1.0) }
+            let blend = bl.normalized()
             let color = Float(i) * Δc
             return FFFlame(affine: affine, blend: blend, color: color)
         }
         return array
+    }
+}
+
+extension Array where Element==Float {
+
+    func normalized() -> [Float] {
+        let total = self.reduce(0, +)
+        return self.map { $0 / total }
     }
 }

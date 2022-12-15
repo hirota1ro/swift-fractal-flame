@@ -6,7 +6,8 @@ extension FractalFlame.Image {
         let element = try FFElement.readFile(name: inputFile)
         if let elt = element.singular {
             let at = elt.pointSpan.transform
-            let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor))
+            let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
+            let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
             let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
             let fileURL = URL(fileURLWithPath: outputFile)
             image.writeTo(fileURL: fileURL)
@@ -15,7 +16,8 @@ extension FractalFlame.Image {
             element.traverse { (elt:FFElement, depth:Int, number:Int) in
                 if elt.isValid {
                     let at = elt.pointSpan.transform
-                    let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor))
+                    let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
+                    let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
                     let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
                     let suffix = suffix(depth: depth, number: number)
                     let fileURL = resolver.resolve(suffix: suffix)
@@ -40,7 +42,7 @@ extension FractalFlame.Image {
             let large = small * CGFloat(density)
             let n = iterations * density * density
             let screen = transform * createScreenTransform(size: large)
-            let renderer = FrFlRasterizer(size: large, screen: screen, resolver: resolver)
+            let renderer = createRasterizer(size: large, screen: screen, resolver: resolver)
             let imgL = renderer.image(with: ff, iterations: n, progress: progress)
             let imgS = imgL.resized(to: small)
             if let image = imgS.gammaAdjusted(inputPower: gamma) {
@@ -50,9 +52,23 @@ extension FractalFlame.Image {
         } else {
             let size = sizeOfImage
             let screen = transform * createScreenTransform(size: size)
-            let renderer = FrFlRasterizer(size: size, screen: screen, resolver: resolver)
+            let renderer = createRasterizer(size: size, screen: screen, resolver: resolver)
             return renderer.image(with: ff, iterations: iterations, progress: progress)
         }
+    }
+
+    func createRasterizer(size: CGSize, screen: CGAffineTransform, resolver: FrFlColorResolver) -> FrFlRasterizer {
+        var renderer = FrFlRasterizer(size: size, screen: screen, resolver: resolver)
+        if transparent {
+            renderer.backgroundColor = nil
+        } else {
+            if dark {
+                renderer.backgroundColor = .black
+            } else {
+                renderer.backgroundColor = .white
+            }
+        }
+        return renderer
     }
 
     func createScreenTransform(size: CGSize) -> CGAffineTransform {

@@ -64,11 +64,34 @@ protocol FrFlColorResolver {
 struct VelocityColorResolver: FrFlColorResolver {
     let velocity: Span
     let factor: CGFloat
+    let brightness: FrFlBrightnessResolver
     let alpha: CGFloat = 1.0
 
     func resolve(color: CGFloat, velocity v: CGPoint) -> NSColor {
-        let sat = velocity.normalized(v.norm) * factor
+        let sat = (velocity.normalized(v.norm) * factor).clamped(to: 0.0 ... 1.0)
         let hue = color - floor(color)
-        return NSColor(hue: hue, saturation: sat, brightness: 1, alpha: alpha)
+        let bri = brightness.resolve(hue: hue, saturation: sat)
+        return NSColor(hue: hue, saturation: sat, brightness: bri, alpha: alpha)
+    }
+}
+
+protocol FrFlBrightnessResolver {
+    func resolve(hue: CGFloat, saturation sat: CGFloat) -> CGFloat
+}
+struct WhiteBackBrightnessResolver: FrFlBrightnessResolver {
+    func resolve(hue: CGFloat, saturation sat: CGFloat) -> CGFloat {
+        return sat
+    }
+}
+struct BlackBackBrightnessResolver: FrFlBrightnessResolver {
+    func resolve(hue: CGFloat, saturation sat: CGFloat) -> CGFloat {
+        return 1
+    }
+}
+
+
+extension Comparable {
+    func clamped(to limits: ClosedRange<Self>) -> Self {
+        return min(max(self, limits.lowerBound), limits.upperBound)
     }
 }

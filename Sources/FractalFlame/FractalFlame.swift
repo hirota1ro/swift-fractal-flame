@@ -43,6 +43,12 @@ extension FractalFlame {
         @Flag(name: .long, help: "Flip horizontal")
         var horizontalFlip: Bool = false
 
+        @Flag(name: .long, inversion: .prefixedNo, help: "If true, assumes a black background")
+        var dark: Bool = true
+
+        @Flag(name: .long, help: "If false, fill background opaque color")
+        var transparent: Bool = false
+
         @Option(name: [.customShort("F"), .long], help: "color factor")
         var colorFactor: Float = 10
 

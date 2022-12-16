@@ -22,7 +22,7 @@ extension FractalFlame.Export {
 
     func createTable(root: FFElement) -> [String] {
         var array: [String] = []
-        root.traverse { (elt: FFElement, d: Int, i: Int) in
+        root.traverse { (elt: FFElement, idxs: IndexPath) in
             if elt.isValid {
                 if array.isEmpty {
                     let bv = (0 ..< elt.varias.count).map({ "b\($0)" }).joined(separator: ", ")
@@ -30,16 +30,16 @@ extension FractalFlame.Export {
                 }
                 elt.flames.forEach {
                     let line = $0.csv.joined(separator: ", ")
-                    array.append("\(d),\(i), \(line)")
+                    array.append("\(idxs.pathLike), \(line)")
                 }
             }
         }
         array.append("#,%, xmin, xmax, ymin, ymax, vmin, vmax, Tx, Ty, Scale, Vspan")
-        root.traverse { (elt: FFElement, d: Int, i: Int) in
+        root.traverse { (elt: FFElement, idxs: IndexPath) in
             if let stat = elt.stat {
                 let a = stat.csv + stat.extra
                 let line = a.joined(separator: ", ")
-                array.append("\(d),\(i), \(line)")
+                array.append("\(idxs.pathLike), \(line)")
             }
         }
         return array

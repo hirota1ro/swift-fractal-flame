@@ -82,13 +82,13 @@ extension FFElement {
         return FrFl(variations: vars, flames: flms)
     }
     func traverse(_ callback: FFElementCallback) {
-        FFElement.traverse(element: self, depth: 0, number: 0, callback)
+        FFElement.traverse(element: self, idxs: IndexPath(), callback)
     }
-    static func traverse(element: FFElement, depth: Int, number: Int, _ callback: FFElementCallback) {
-        callback(element, depth, number)
+    static func traverse(element: FFElement, idxs: IndexPath, _ callback: FFElementCallback) {
+        callback(element, idxs)
         var number: Int = 0
         for child in element.children {
-            traverse(element: child, depth: depth + 1, number: number, callback)
+            traverse(element: child, idxs: idxs.appending(number), callback)
             number += 1
         }
     }
@@ -97,7 +97,7 @@ extension FFElement {
         var found: FFElement? = nil
         var dup: Bool = false
 
-        self.traverse { (elt:FFElement, d:Int, n:Int) in
+        self.traverse { (elt:FFElement, idxs:IndexPath) in
             if elt.isValid {
                 if let _ = found {
                     dup = true
@@ -120,7 +120,7 @@ extension FFElement {
     }
 }
 
-typealias FFElementCallback = (FFElement, Int, Int) -> Void
+typealias FFElementCallback = (FFElement, IndexPath) -> Void
 
 extension FFFlame {
     func flame(i: Int, n: Int, vars: [FrFl.VF]) -> FrFl.F {

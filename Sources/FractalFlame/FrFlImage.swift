@@ -5,23 +5,16 @@ extension FractalFlame.Image {
     mutating func run() throws {
         let element = try FFElement.readFile(name: inputFile)
         let fpr: FilePathResolver = element.singular != nil ? ConstFilePathResolver(path: outputFile) : SuffixFilePathResolver(path: outputFile)
-        element.traverse { (elt:FFElement, depth:Int, number:Int) in
+        element.traverse { (elt:FFElement, idxs: IndexPath) in
             if elt.isValid {
-                let suffix = suffix(depth: depth, number: number)
                 let at = elt.pointSpan.transform
                 let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
                 let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
                 let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
-                let fileURL = fpr.resolve(suffix: suffix)
+                let fileURL = fpr.resolve(suffix: idxs.pathLike)
                 image.writeTo(fileURL: fileURL)
             }
         }
-    }
-
-    func suffix(depth: Int, number: Int) -> String {
-        let d = String(format: "%04d", depth)
-        let n = String(format: "%04d", number)
-        return "\(d)-\(n)"
     }
 
     var sizeOfImage: CGSize { return CGSize(width: width, height: height ?? width) }
@@ -68,5 +61,13 @@ extension FractalFlame.Image {
           .scaledBy(x: half.width, y: half.height)
           .scaledBy(x: CGFloat(scale), y: CGFloat(scale))
           .scaledBy(x: horizontalFlip ? -1 : 1, y: verticalFlip ? -1 : 1)
+    }
+}
+
+extension IndexPath {
+
+    var pathLike: String {
+        let a = self.map { return String(format: "%04d", $0) }
+        return a.joined(separator: "-")
     }
 }

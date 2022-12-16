@@ -8,10 +8,10 @@ extension FractalFlame.VisualizeAffine {
         let resolver = SuffixFilePathResolver(path: outputFile)
         let size = sizeOfImage
         let element = try FFElement.readFile(name: inputFile)
-        element.traverse { (elt:FFElement, depth:Int, number:Int) in
+        element.traverse { (elt:FFElement, idxs: IndexPath) in
             for (i, flame) in elt.flames.enumerated() {
                 let image = image(with: flame.affine.cg, size: size)
-                let fileURL = resolver.resolve(suffix: "\(depth)-\(number)-\(i)")
+                let fileURL = resolver.resolve(suffix: "\(idxs.pathLike)-\(i)")
                 image.writeTo(fileURL: fileURL)
             }
         }

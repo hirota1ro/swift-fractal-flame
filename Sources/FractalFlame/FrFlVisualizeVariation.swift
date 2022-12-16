@@ -5,7 +5,7 @@ extension FractalFlame.VisualizeVariation {
     var sizeOfImage: CGSize { return CGSize(width: width, height: height ?? width) }
 
     mutating func run() throws {
-        let resolver = FilePathResolver(path: outputFile)
+        let resolver = SuffixFilePathResolver(path: outputFile)
         let size = sizeOfImage
         let element = try FFElement.readFile(name: inputFile)
         let tr = element.flames.first?.affine.cg ?? .identity

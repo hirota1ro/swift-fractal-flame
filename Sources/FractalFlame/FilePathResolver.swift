@@ -1,10 +1,25 @@
 import Foundation
 
-struct FilePathResolver {
-    let path: String
+protocol FilePathResolver {
+    func resolve(suffix: String) -> URL
 }
 
-extension FilePathResolver {
+
+struct ConstFilePathResolver {
+    let path: String
+}
+extension ConstFilePathResolver: FilePathResolver {
+
+    func resolve(suffix: String) -> URL {
+        return URL(fileURLWithPath: path)
+    }
+}
+
+
+struct SuffixFilePathResolver {
+    let path: String
+}
+extension SuffixFilePathResolver: FilePathResolver {
 
     func resolve(suffix: String) -> URL {
         let fileURL = URL(fileURLWithPath: path)

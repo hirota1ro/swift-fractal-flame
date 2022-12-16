@@ -4,25 +4,16 @@ extension FractalFlame.Image {
 
     mutating func run() throws {
         let element = try FFElement.readFile(name: inputFile)
-        if let elt = element.singular {
-            let at = elt.pointSpan.transform
-            let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
-            let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
-            let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
-            let fileURL = URL(fileURLWithPath: outputFile)
-            image.writeTo(fileURL: fileURL)
-        } else {
-            let resolver = FilePathResolver(path: outputFile)
-            element.traverse { (elt:FFElement, depth:Int, number:Int) in
-                if elt.isValid {
-                    let at = elt.pointSpan.transform
-                    let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
-                    let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
-                    let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
-                    let suffix = suffix(depth: depth, number: number)
-                    let fileURL = resolver.resolve(suffix: suffix)
-                    image.writeTo(fileURL: fileURL)
-                }
+        let fpr: FilePathResolver = element.singular != nil ? ConstFilePathResolver(path: outputFile) : SuffixFilePathResolver(path: outputFile)
+        element.traverse { (elt:FFElement, depth:Int, number:Int) in
+            if elt.isValid {
+                let suffix = suffix(depth: depth, number: number)
+                let at = elt.pointSpan.transform
+                let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
+                let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
+                let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
+                let fileURL = fpr.resolve(suffix: suffix)
+                image.writeTo(fileURL: fileURL)
             }
         }
     }

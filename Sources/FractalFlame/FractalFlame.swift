@@ -20,7 +20,7 @@ extension FractalFlame {
         var inputFile: String
 
         @Option(name: .shortAndLong, help: "The number of image width")
-        var width: Int = 256
+        var width: Int = 512
 
         @Option(name: .shortAndLong, help: "The number of image height (default: same as the width)")
         var height: Int?
@@ -76,7 +76,7 @@ extension FractalFlame {
         var useBaseElement: Bool = false
 
         @Option(name: .shortAndLong, help: "The number of image width")
-        var width: Int = 256
+        var width: Int = 512
 
         @Option(name: .shortAndLong, help: "The number of image height (default: same as the width)")
         var height: Int?
@@ -138,7 +138,7 @@ extension FractalFlame {
         var inputFile: String
 
         @Option(name: .shortAndLong, help: "The number of image width")
-        var width: Int = 256
+        var width: Int = 512
 
         @Option(name: .shortAndLong, help: "The number of image height (default: same as the width)")
         var height: Int?
@@ -158,7 +158,7 @@ extension FractalFlame {
         var inputFile: String
 
         @Option(name: .shortAndLong, help: "The number of image width")
-        var width: Int = 256
+        var width: Int = 512
 
         @Option(name: .shortAndLong, help: "The number of image height (default: same as the width)")
         var height: Int?

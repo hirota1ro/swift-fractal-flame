@@ -269,13 +269,12 @@ extension FrFl {
         let high: CGFloat
         let low: CGFloat
         let waves: CGFloat
-        func create(transform: CGAffineTransform) -> V {
-            return {
-                let (p₁, p₂, p₃) = (high, low, waves)
-                let (r, θ) = ($0.r, $0.θ)
-                let q = r * (p₂ + ((p₁ - p₂)/2) * (sin(p₃ * θ) + 1))
-                return CGPoint(x: cos(θ), y: sin(θ)) * q
-            }
+        func create(transform: CGAffineTransform) -> V { return f }
+        func f(p: CGPoint) -> CGPoint {
+            let (p₁, p₂, p₃) = (high, low, waves)
+            let (r, θ) = (p.r, p.θ)
+            let q = r * (p₂ + ((p₁ - p₂)/2) * (sin(p₃ * θ) + 1))
+            return CGPoint(x: cos(θ), y: sin(θ)) * q
         }
         var description: String {
             let sh = String(format: "%.2f", high)

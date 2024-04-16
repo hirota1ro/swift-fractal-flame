@@ -7,6 +7,17 @@ class FFAffine: FFNode, FFJSONable, FFCSVable {
     var csv: [String] { get { fatalError("Not implementation") } }
     var cg: CGAffineTransform { get { fatalError("Not implementation") } }
     var flattend: FFAffineMatrix { get { fatalError("Not implementation") } }
+    func accept(visitor: FFAffineVisitor) { fatalError("Not implementation") }
+}
+
+// Visitor pattern
+protocol FFAffineVisitor {
+    func visit(matrix: FFAffineMatrix)
+    func visit(rotation: FFAffineRotation)
+    func visit(translation: FFAffineTranslation)
+    func visit(scale: FFAffineScale)
+    func visit(skew: FFAffineSkew)
+    func visit(composite: FFAffineComposite)
 }
 
 extension FFAffine {
@@ -81,6 +92,8 @@ class FFAffineMatrix: FFAffine {
     }
 
     override var flattend: FFAffineMatrix { return self }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(matrix: self) }
 }
 
 extension FFAffineMatrix {
@@ -148,6 +161,8 @@ class FFAffineRotation: FFAffine {
     override var flattend: FFAffineMatrix {
         return FFAffineMatrix(a: sin(angle), b: -cos(angle), c: cos(angle), d: sin(angle), tx: 0, ty: 0)
     }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(rotation: self) }
 }
 
 extension FFAffineRotation {
@@ -206,6 +221,8 @@ class FFAffineTranslation: FFAffine {
     override var flattend: FFAffineMatrix {
         return FFAffineMatrix(a: 1, b: 0, c: 0, d: 1, tx: tx, ty: ty)
     }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(translation: self) }
 }
 
 extension FFAffineTranslation {
@@ -265,6 +282,8 @@ class FFAffineScale: FFAffine {
     override var flattend: FFAffineMatrix {
         return FFAffineMatrix(a: sx, b: 0, c: 0, d: sy, tx: 0, ty: 0)
     }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(scale: self) }
 }
 
 extension FFAffineScale {
@@ -324,6 +343,8 @@ class FFAffineSkew: FFAffine {
     override var flattend: FFAffineMatrix {
         return FFAffineMatrix(a: 1, b: skx, c: sky, d: 1, tx: 0, ty: 0)
     }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(skew: self) }
 }
 
 extension FFAffineSkew {
@@ -382,6 +403,8 @@ class FFAffineComposite: FFAffine {
     override var flattend: FFAffineMatrix {
         return FFAffineMatrix(withCGAffineTransform: cg)
     }
+
+    override func accept(visitor: FFAffineVisitor) { visitor.visit(composite: self) }
 }
 
 extension FFAffineComposite {

@@ -5,7 +5,8 @@ import ArgumentParser
 struct FractalFlame: ParsableCommand {
     static var configuration = CommandConfiguration(
       abstract: "Utilities for Fractal Flames.",
-      subcommands: [Image.self, Search.self, Interpolate.self, ExpandVariation.self, Export.self,
+      subcommands: [Image.self, Search.self, Interpolate.self, Rotate.self,
+                    ExpandVariation.self, Export.self,
                     VisualizeVariation.self, VisualizeAffine.self],
       defaultSubcommand: Image.self,
       helpNames: [.long, .customShort("?")])
@@ -103,6 +104,20 @@ extension FractalFlame {
 
         @Option(name: .shortAndLong, help: "output file path")
         var outputFile: String = "FF-inter.ffdoc"
+    }
+
+    struct Rotate: ParsableCommand {
+        static var configuration
+          = CommandConfiguration(abstract: "Rotate flame")
+
+        @Argument(help: "ffdoc file")
+        var inputFile: String
+
+        @Option(name: .shortAndLong, help: "number of interporation")
+        var count: Int = 10
+
+        @Option(name: .shortAndLong, help: "output file path")
+        var outputFile: String = "FF-rotated.ffdoc"
     }
 
     struct ExpandVariation: ParsableCommand {

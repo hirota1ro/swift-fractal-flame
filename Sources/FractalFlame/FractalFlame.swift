@@ -161,6 +161,12 @@ extension FractalFlame {
         @Option(name: .shortAndLong, help: "Scale factor: [-1,1]×[-1,1] to (width×height)*scale")
         var scale: Float = 0.5
 
+        @Flag(name: .long, help: "Flip vertical")
+        var verticalFlip: Bool = false
+
+        @Flag(name: .long, help: "Flip horizontal")
+        var horizontalFlip: Bool = false
+
         @Option(name: .shortAndLong, help: "output file path")
         var outputFile: String = "FF-variation.png"
     }
@@ -180,6 +186,12 @@ extension FractalFlame {
 
         @Option(name: .shortAndLong, help: "Scale factor: [-1,1]×[-1,1] to (width×height)*scale")
         var scale: Float = 0.5
+
+        @Flag(name: .long, help: "Flip vertical")
+        var verticalFlip: Bool = false
+
+        @Flag(name: .long, help: "Flip horizontal")
+        var horizontalFlip: Bool = false
 
         @Option(name: .shortAndLong, help: "output file path")
         var outputFile: String = "FF-affine.png"

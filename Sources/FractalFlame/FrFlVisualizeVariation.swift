@@ -25,6 +25,7 @@ extension FractalFlame.VisualizeVariation {
         return CGAffineTransform(translationX: half.width, y: half.height)
           .scaledBy(x: scaleToFit, y: scaleToFit)
           .scaledBy(x: CGFloat(scale), y: CGFloat(scale))
+          .scaledBy(x: horizontalFlip ? -1 : 1, y: verticalFlip ? -1 : 1)
     }
 
     func image(with vf: FrFl.VF, size: CGSize, transform: CGAffineTransform) -> NSImage {

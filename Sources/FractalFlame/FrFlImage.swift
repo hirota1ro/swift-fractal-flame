@@ -7,9 +7,11 @@ extension FractalFlame.Image {
         let fpr: FilePathResolver = element.singular != nil ? ConstFilePathResolver(path: outputFile) : SuffixFilePathResolver(path: outputFile)
         element.traverse { (elt:FFElement, idxs: IndexPath) in
             if elt.isValid {
+                elt.stat = stat(from: elt)
                 let at = elt.pointSpan.transform
                 let br: FrFlBrightnessResolver = dark ? BlackBackBrightnessResolver() : WhiteBackBrightnessResolver()
-                let cr = VelocityColorResolver(velocity: elt.velocitySpan, factor: CGFloat(colorFactor), brightness: br)
+                let vspan = elt.velocitySpan
+                let cr = VelocityColorResolver(velocity: vspan, factor: CGFloat(colorFactor), brightness: br)
                 let image = createImage(with: elt.fractalFlame, resolver: cr, transform: at)
                 let fileURL = fpr.resolve(suffix: idxs.pathLike)
                 image.writeTo(fileURL: fileURL)
@@ -61,6 +63,21 @@ extension FractalFlame.Image {
           .scaledBy(x: half.width, y: half.height)
           .scaledBy(x: CGFloat(scale), y: CGFloat(scale))
           .scaledBy(x: horizontalFlip ? -1 : 1, y: verticalFlip ? -1 : 1)
+    }
+
+    func stat(from elt: FFElement) -> FFStat {
+        if let already = elt.stat { 
+            return already
+        }
+        let ff = elt.fractalFlame
+        let plotter = FrFlStatSpan()
+        let succeeded = ff.draw(iterations: iterations, plotter: plotter, progress: EmptyProgress())
+        if !succeeded { print("failed"); }
+        let stat = plotter.node
+        let data = try! JSONSerialization.data(withJSONObject: stat.json)
+        let str = String(decoding: data, as: UTF8.self)
+        print("\"stat\":\(str)")
+        return stat
     }
 }
 

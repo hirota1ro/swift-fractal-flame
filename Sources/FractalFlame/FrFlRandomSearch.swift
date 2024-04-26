@@ -39,9 +39,6 @@ extension FractalFlame.Search {
         var threshold = self.threshold
         countProgress.begin()
         while found < count {
-            // let flames: [FFFlame] = useBaseElement
-            //   ? randomFlames(base: reference)
-            //   : randomFlames(n: reference.flames.count, m: varias.count)
             let flames: [FFFlame] = generator.randomFlames()
             let elt = FFElement(varias: varias, flames: flames, children: [])
             let ff = elt.fractalFlame

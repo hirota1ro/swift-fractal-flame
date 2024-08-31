@@ -29,21 +29,21 @@ extension FrFlRasterizer {
     ///   - progress: progress interface
     /// - Returuns: new image
     func image(with ff: FrFl, iterations: Int, progress: FrFlProgress) -> NSImage {
-        let image = NSImage(size: size)
-        image.lockFocus()
-        if let backgroundColor = backgroundColor {
-            backgroundColor.setFill()
-            CGRect(origin: .zero, size: size).fill()
+        let bm = Bitmap(size: size)
+        let cgImg = bm.image { _ in
+            if let backgroundColor = backgroundColor {
+                backgroundColor.setFill()
+                CGRect(origin: .zero, size: size).fill()
+            }
+            if let textColor = textColor {
+                let text = ff.description
+                let attr: [NSAttributedString.Key: Any] = [ .foregroundColor: textColor ]
+                let h = CGFloat(ff.flames.count + 1) * 14
+                text.draw(at: CGPoint(x: 4, y: size.height-h), withAttributes: attr)
+            }
+            let _ = ff.draw(iterations: iterations, plotter: self, progress: progress)
         }
-        if let textColor = textColor {
-            let text = ff.description
-            let attr: [NSAttributedString.Key: Any] = [ .foregroundColor: textColor ]
-            let h = CGFloat(ff.flames.count + 1) * 14
-            text.draw(at: CGPoint(x: 4, y: size.height-h), withAttributes: attr)
-        }
-        let _ = ff.draw(iterations: iterations, plotter: self, progress: progress)
-        image.unlockFocus()
-        return image
+        return NSImage(cgImage: cgImg, size: size)
     }
 }
 

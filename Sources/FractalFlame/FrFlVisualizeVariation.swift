@@ -29,23 +29,23 @@ extension FractalFlame.VisualizeVariation {
     }
 
     func image(with vf: FrFl.VF, size: CGSize, transform: CGAffineTransform) -> NSImage {
-        let image = NSImage(size: size)
-        image.lockFocus()
-        NSColor.white.setFill()
-        drawBackground(size: size)
-        NSColor.gray.setStroke()
-        drawAxis(size: size)
-        let v = vf.create(transform: transform)
-        if vf.continuous {
-            NSColor.black.setStroke()
-            drawAsLine(v: v)
-        } else {
-            NSColor.black.setFill()
-            drawAsDots(v: v)
+        let bm = Bitmap(size: size)
+        let cgImg = bm.image { _ in
+            NSColor.white.setFill()
+            drawBackground(size: size)
+            NSColor.gray.setStroke()
+            drawAxis(size: size)
+            let v = vf.create(transform: transform)
+            if vf.continuous {
+                NSColor.black.setStroke()
+                drawAsLine(v: v)
+            } else {
+                NSColor.black.setFill()
+                drawAsDots(v: v)
+            }
+            draw(text: "\(vf)", at: CGPoint(x:0, y: size.height), color: .black)
         }
-        draw(text: "\(vf)", at: CGPoint(x:0, y: size.height), color: .black)
-        image.unlockFocus()
-        return image
+        return NSImage(cgImage: cgImg, size: size)
     }
 
     func drawAsLine(v: FrFl.V) {

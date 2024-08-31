@@ -28,22 +28,22 @@ extension FractalFlame.VisualizeAffine {
     }
 
     func image(with transform: CGAffineTransform, size: CGSize) -> NSImage {
-        let image = NSImage(size: size)
-        image.lockFocus()
-        NSColor.white.setFill()
-        CGRect(origin: .zero, size: size).fill()
-        let screen = toScreen
-        NSColor.gray.setStroke()
-        drawAxis(size: size)
-        let path = figure()
-        NSColor.blue.setStroke()
-        path.applied(screen).stroke()
-        path.transform(using: AffineTransform(cgTransform: transform))
-        NSColor.red.setStroke()
-        path.applied(screen).stroke()
-        draw(text: "\(transform)", at: CGPoint(x:0, y: size.height), color: .black)
-        image.unlockFocus()
-        return image
+        let bm = Bitmap(size: size)
+        let cgImg = bm.image { _ in
+            NSColor.white.setFill()
+            CGRect(origin: .zero, size: size).fill()
+            let screen = toScreen
+            NSColor.gray.setStroke()
+            drawAxis(size: size)
+            let path = figure()
+            NSColor.blue.setStroke()
+            path.applied(screen).stroke()
+            path.transform(using: AffineTransform(cgTransform: transform))
+            NSColor.red.setStroke()
+            path.applied(screen).stroke()
+            draw(text: "\(transform)", at: CGPoint(x:0, y: size.height), color: .black)
+        }
+        return NSImage(cgImage: cgImg, size: size)
     }
 
     private func figure() -> NSBezierPath {
